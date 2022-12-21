@@ -1,0 +1,23 @@
+#include<stdio.h>
+#include<stdlib.h>
+
+#define PSTEP 0.001    //step di incremento della probsbilià di "guasto" per la ricerca di P_cluster
+
+int main(int argc, char *argv[]){
+
+  int L;
+  int Storie;
+  double Prob;
+  
+  L = atoi(argv[1]);
+  Storie = atoi(argv[2]);
+
+  int fatto = 0;
+  
+  for(Prob = PSTEP; fatto!=0; Prob += PSTEP){
+  int *rete = (int *)calloc(L*L, sizeof(int));
+
+  
+
+  return 0;
+}
