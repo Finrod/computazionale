@@ -60,7 +60,7 @@ int main(int argc, char** argv){
   r4=alloca_double(kmax);
 
   for (n=0;n<numw;n++) {
-    una_passeggiata(&seed, &zonzo, kmax, r2, r4);  //ho cambiato seed*********************************
+    una_passeggiata(&seed, &zonzo, kmax, r2, r4);
   }
 
   stampa_finale(kmax,numw,r2,r4);
@@ -75,19 +75,24 @@ int main(int argc, char** argv){
 
 void controllo_e_init(int argc, char** argv, RTYPE* seed, 
 		      int* kmax, int* numw){
-  if(argc<4){
-    printf("IMPUT---->SEED KMAX NUMW\n");
+
+  if(argc!=4) {
+    fprintf(stderr,"Usami in questo modo:\n");
+    fprintf(stderr,"%s <seme generatore> <k> <numero camminatori>\n", argv[0]);
+    fprintf(stderr,"il tempo massimo sarà 2^k. Inserire k>5\n");
     exit(-1);
   }
-  
-  *seed = atoi(argv[1]);
-  *kmax = atoi(argv[2]);
-  *numw = atoi(argv[3]);
+  *seed=atol(argv[1]); 
+  *kmax=atoi(argv[2]); 
+  *numw=atoi(argv[3]); 
 
-  if(*kmax<=5){
-    printf("Wrong imput--->kmax>5 !!!\n");
-    exit(-2);
-  }
+  if ( (*kmax) <=5 ) {
+    fprintf(stderr,"Usami in questo modo:\n%s <seme generatore> <k> <numero camminatori>\n", argv[0]);
+    fprintf(stderr,"il tempo massimo sarà 2^k. Inserire k>5\n");
+    exit(-2);    
+  } 
+
+  return;
 }
 
 double* alloca_double(int quanti) {
@@ -95,7 +100,7 @@ double* alloca_double(int quanti) {
   double *ris;
   ris=(double *)calloc(quanti, sizeof(double));
   if (ris==NULL) {
-    fprintf(stderr,"Allocazione fallita. Esco.\n");
+    fprintf(stderr,"Allocazione fallita. Esco.");
     exit(-4);
   }
   return ris;
@@ -121,31 +126,28 @@ void una_passeggiata(RTYPE* seed, struct walker* w, int kmax, double *r2, double
     /*ora misuriamo e aggiorniamo il prossimo traguardo, misuro a tempi potenze di 2*/
     reg=(w->x)*(w->x) + (w->y)*(w->y);
     r2[k]+=reg;
-    r4[k]+=reg*reg*reg*reg;
+    r4[k]+=reg*reg;
     next*=2;
   }
   return;
 }
 
-void un_passo(RTYPE* seed, struct walker *w) {   //ho messo il puntatore*************************
+void un_passo(RTYPE* seed, struct walker* w) {
 
   RTYPE mossaCasuale;
 
-  int fatto=0;   //ho messo fatto a 0******************************
-  
+  int fatto=0;
+
   while (fatto==0) {
-    /*(*seed)=(*seed)*MOLTIPLICATORE;
-      mossaCasuale=(*seed)>>62;*/                                                   //che vuol dire???
-    (*seed)=((*seed)*MOLTIPLICATORE)%(1ULL<<62);
-    mossaCasuale=(*seed)%4;
-    printf("%llu\n", seed);
+    (*seed)=(*seed)*MOLTIPLICATORE;
+    mossaCasuale=(*seed)>>62;
     /*mossaCasuale può valere solo 0,1,2,3*/
     /*direzioneProibita contiene il valore di casuale che va scartato*/
     if (mossaCasuale != w->direzioneProibita) {
       if (mossaCasuale==0) w->x++; 
       else if (mossaCasuale==1) w->y++;
       else if (mossaCasuale==2) w->x--;
-      else if (mossaCasuale==3) w->y--;  //ho messo 3 qua****************************
+      else if (mossaCasuale==3) w->y--;
       else {
 	fprintf(stderr,"numero casuale inaspettato. Termino.\n");
 	exit(-3);
@@ -163,19 +165,21 @@ void un_passo(RTYPE* seed, struct walker *w) {   //ho messo il puntatore********
 
 void stampa_finale(int kmax, int numw, double* r2, double* r4) {
 
-  int k, t;
-  FILE *pf = fopen("medie.dat","w");
+  int k, next;
+  FILE* fp;
 
-  fprintf(pf, "#%16s %16s %16s\n", "t", "MSD", "err");
-  
-  for(k=4; k<kmax; k++){
-    r2[k] /= numw;
-    r4[k] /= numw; //SARA' GIUSTO?
-    t = 1<<(k+1);
-
-    fprintf(pf, "%16d %16g %16g\n", t, r2[k], r4[k]);
+  fp=fopen("medie.out","w");
+  /*Stampiamo i risultati solo da t=32 per eliminare il transiente*/
+  fprintf(fp,"## t           r^2   err\n");
+  next=32;
+  for (k=4;k<kmax;k++) {
+    r2[k]/=numw;
+    r4[k]/=numw;
+    r4[k]-=r2[k]*r2[k];
+    r4[k]=sqrt(r4[k]/(numw-1));
+    fprintf(fp,"%-10d %g %g\n", next, r2[k], r4[k]);
+    next*=2;
   }
 
-  fclose(pf);
-  return;
+  fclose(fp);
 }

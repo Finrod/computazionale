@@ -10,4 +10,7 @@ poincare : integrator.c
 	./poincare.exe
 attrazione :  integrator.c
 	${COMPILE} -DATTRAZIONE integrator.c -o attrazione.exe -lm
-
+	./attrazione.exe
+biforcazione :  integrator.c
+	${COMPILE} -DBIFORCAZIONE integrator.c -o biforcazione.exe -lm
+	./biforcazione.exe 

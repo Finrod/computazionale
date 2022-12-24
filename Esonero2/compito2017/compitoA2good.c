@@ -67,26 +67,24 @@ void leggi_numeri(struct dati* X, char* nomefile) {
 
     int i;
     FILE* finp;
-    double reg;
-    finp = fopen(nomefile, "r");
+    double reg=0;
 
-    for(i=0; i<(X->Nran); i++){
-      fscanf(finp, "%lg", &reg);
-      X->numeri[i] = reg;
+    finp=fopen(nomefile,"r");
 
-      if(i==0){
-	X->mini = X->numeri[i];
-	X->maxi = X->numeri[i];
-      }
-
-      else if((X->numeri[i]) < (X->mini))
-	X->mini = X->numeri[i];
-      
-      else if((X->numeri[i]) > (X->maxi))
-	X->maxi = X->numeri[i];	
+    fscanf(finp,"%lf",&reg);
+    X->mini=reg;
+    X->maxi=reg;
+    X->numeri[0]=reg;
+    for(i=1;i<X->Nran;i++) {
+	fscanf(finp,"%lf",&reg);
+	if (reg<X->mini) X->mini=reg;
+	if (reg>X->maxi) X->maxi=reg;
+	X->numeri[i]=reg;
     }
 
     fclose(finp);
+
+    return;
 }
 
 
@@ -96,20 +94,20 @@ void riempi_istogramma_e_normalizza(struct dati X) {
     double delta;
     double norma;
 
-    delta = (X.maxi - X.mini) / (double) (X.Nbin-1);
-    norma = delta * X.Nran;
-    norma = 1/norma;
+    delta=(X.maxi-X.mini)/(X.Nbin-1);
+    norma=1./(delta*(X.Nran));
 
-    for(index=0; index<(X.Nbin); index++)
-      X.prob[index] = 0;
-    
-    for(i=0; i<(X.Nran); i++){
-      index = (X.numeri[i] - X.mini) / delta + 0.5;
+    for (i=0;i<X.Nbin;i++) X.prob[i]=0.;
+
+    for (i=0;i<X.Nran;i++) {
+      index=(int)((X.numeri[i]-X.mini)/delta+0.5);
       X.prob[index]++;
     }
 
-    for(index=0; index<(X.Nbin); index++)
-      X.prob[index]*=norma;
+    for (i=0;i<X.Nbin;i++) X.prob[i]*=norma;
+
+    return;
+
 }
 
 void stampa_prob(struct dati X) {

@@ -1,19 +1,20 @@
 #!/bin/bash
 
-start=0
-dx=31.4
+
 pi=`echo "h=10;4*a(1)" | bc -l`
-echo $pi
-
-echo "var=219.22;var*=0.001;var" | bc 
-
+start=-$pi
+dx=0.00628318531
 
 
+rm -f attrazione.dat
 
-x=${start}
-v=${start}
-a=0.5
-b=0
+for((x=-3.14; x<$pi; x= x+dx)) ; do
+    for((v=-$pi; v<$pi; v= v+dx)) ; do
+	./attrazione.exe ${x} ${v} >> attrazione.dat
+    done
+done
+
+
 
 #echo ${dx}
 
