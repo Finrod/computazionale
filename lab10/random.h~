@@ -45,6 +45,6 @@ double get_normal(){
   return norm;
 }
 
-int get_intero( int N ){ return (int) get_int() % (N+1); }  //renderla tra A e B
+int get_intero( int A,  int B){ return (int) get_int() % (B - A + 1) + A; } 
 
 

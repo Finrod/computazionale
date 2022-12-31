@@ -1,7 +1,7 @@
 #define DIM 2
 #include<stdlib.h>
 #include<math.h>
-#include "rungekutta.h"
+#include "rungekuttaII.h"
 
 #define g 9.81
 

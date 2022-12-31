@@ -8,8 +8,6 @@ typedef unsigned long long int RANDOM;
 
 RANDOM seed, add, mul, mod;
 
-
-
 void set_minimal_std(){
   mod = (1ULL<<31) - 1ULL;
   add = 0ULL;
@@ -19,6 +17,11 @@ void set_randu(){
   mod = (1ULL<<31);
   add = 0ULL;
   mul = 65539ULL;
+}
+void set_Ecuyer2(){
+  mod = (1ULL<<31) - 1ULL;
+  add = 0ULL;
+  mul = 1385320287ULL;
 }
 void set_my_LCG( RANDOM a, RANDOM b, RANDOM c){
   mul = (RANDOM) a;               
@@ -40,4 +43,4 @@ double get_normal(){
   return norm;
 }
 
-
+int get_intero( int A,  int B){ return (int) get_int() % (B - A + 1) + A;}

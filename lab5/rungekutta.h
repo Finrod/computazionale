@@ -10,10 +10,6 @@ void pfma (double c, double *a, double *b, double *result){      // result = a*c
   for (int i=0; i<DIM ; i++)
     result [i] = fma (c, a [i], b[i]);
 }
-void pcopy (double *a, double *b){
-  for (int i=0; i<DIM ; i++)
-    b [i] = a [i];
-}
 
 void drift (double *pin, double *pout, double t, double dt, void *param);
 void energy (double *E, double *p, void *param);

@@ -6,7 +6,7 @@
 
 int main (int argc, char **argv ){
 
-  parameters param = {2 * M_PI, 0.5, 1.5, 2./3.};
+  parameters param = {2 * M_PI, 0.3, 0., 2./3.};
   double tempo = 0;
 
   FILE *gnuplotPipe;
@@ -55,7 +55,7 @@ int main (int argc, char **argv ){
   double delta = M_PI / 500.;
 
   int COMANDI = 5;
-  char *comandi[] = {"set term x11 0", "set title 'Bacini attrazione'", "set xlabel 'x_0'", "set ylabel 'v_0'",  "plot [-pi:pi][-pi:pi]  '<grep P attrazione1.5.dat' u 2:3 title '' w points pt '.' lc 5, '<grep M attrazione1.5.dat' u 2:3 title '' w points pt '.' lc 8"};
+  char *comandi[] = {"set term x11 0", "set title 'Bacini di attrazione'", "set xlabel 'x_0'", "set ylabel 'v_0'",  "plot [-pi:pi][-pi:pi]  '<grep P pendolo.dat' u 2:3 title '' w points pt '.' lc 5, '<grep M pendolo.dat' u 2:3 title '' w points pt '.' lc 8"};
   
   for(x0=-M_PI; x0<M_PI; x0+=delta){
     for(v0=-M_PI; v0<M_PI; v0+=delta){
@@ -67,16 +67,18 @@ int main (int argc, char **argv ){
    double t  = Fperiod * 100.;
    double dt  = Fperiod / 100.;
    int tsteps = rint(t/dt);
-   double phase [DIM] = {M_PI/2., 0.};
 
    double fmin = 0.9;
    double fmax = 1.5;
    double df = 0.0001;
+   double phase [DIM];
 
    int COMANDI = 5;
    char *comandi[] = {"set term x11 0", "set title 'Diagramma di biforcazione'", "set xlabel 'F_0'", "set ylabel 'v'",  "plot 'pendolo.dat' title 'v(F_0)' w points pt '.' lc 8"};
 
    for(double f=fmin; f<=fmax; f+=df){
+     phase [0] = M_PI/2.;
+     phase [1] = 0. * M_PI / 10.;
      param.forz=f;
 #endif
   

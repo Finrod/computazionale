@@ -16,7 +16,7 @@ void pcopy (double *a, double *b){
 }
 
 void drift (double *pin, double *pout, double t, double dt, void *param);
-
+void energy (double *E, double *p, void *param);
 void rungekutta ( double *pin, double *pout, double t, double dt, void *param){
 
   double k [DIM];

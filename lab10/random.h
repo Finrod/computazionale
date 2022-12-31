@@ -8,8 +8,6 @@ typedef unsigned long long int RANDOM;
 
 RANDOM seed, add, mul, mod;
 
-
-
 void set_minimal_std(){
   mod = (1ULL<<31) - 1ULL;
   add = 0ULL;
@@ -45,6 +43,6 @@ double get_normal(){
   return norm;
 }
 
-int get_intero( int A,  int B){ return (int) get_int() % (B - A + 1) + A; } 
+int get_intero( int A,  int B){ return (int) get_int() % (B - A + 1) + A; }
 
 

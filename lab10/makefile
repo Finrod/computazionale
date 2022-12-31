@@ -5,3 +5,6 @@ reticular : reticular.c
 
 debug :	reticular.c
 	${COMPILE} -DDEBUG -DLEGENDA reticular.c -o reticular.exe -lm
+
+plot :	reticular.c
+	${COMPILE} -DPLOT reticular.c -o reticular.exe -lm

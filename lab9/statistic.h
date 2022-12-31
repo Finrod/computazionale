@@ -65,7 +65,7 @@ void print_statistic(stat statistic){
     printf("Something went wrong...");
 
 
-  char *comandi[] = {"set term wxt 0", "set title 'Probability distribution'", "plot  '__stat_analysis__.dat' u 1:2 w boxes",    "set term wxt 1", "set title 'Cumulative distribution'", "plot '__stat_analysis__.dat' u 1:3 w l"};
+  char *comandi[] = {"set term wxt 0", "set title 'Probability distribution'", "set xlabel 'x'", "set ylabel 'P(x)'", "plot  '__stat_analysis__.dat' u 1:2 title '' w boxes", "set term wxt 1", "set title 'Cumulative distribution'", "set xlabel 'x'", "set ylabel 'P(x)'", "plot '__stat_analysis__.dat' u 1:3 title '' w l"};
 
 
   
@@ -91,7 +91,7 @@ void print_statistic(stat statistic){
   fprintf(pf, "\n\n");
 
 
-  for(int i=0; i<6; i++)
+  for(int i=0; i<10; i++)
     fprintf(gnuplotPipe, "%s\n", comandi[i]);
 
   free(statistic.hist);

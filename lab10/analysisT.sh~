@@ -1,15 +1,24 @@
 #!/bin/bash
 
-POINTS=20
-RHO=0.1
-L=80
-STORIES=5000
-STEP=50
+POINTS=50
+RHO=0.6
+L=30
+STORIES=3000
+STEP=20
 
 
 
 for((i=1; i<=${POINTS}; i++)) ; do
     let T=${i}*${STEP}
-    ./reticular.exe 0.1 ${L} ${T} ${STORIES} >> dati/diffusioneR1.dat
+    ./reticular.exe ${RHO} ${L} ${T} ${STORIES} >> dati/L30_R06.dat
 done
 
+for((i=1; i<=${POINTS}; i++)) ; do
+    let T=${i}*${STEP}
+    ./reticular.exe ${RHO} 20 ${T} ${STORIES} >> dati/L20_06.dat
+done
+
+for((i=1; i<=${POINTS}; i++)) ; do
+    let T=${i}*${STEP}
+    ./reticular.exe ${RHO} 10 ${T} ${STORIES} >> dati/L10_06.dat
+done

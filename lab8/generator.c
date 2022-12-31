@@ -7,9 +7,9 @@
 
 int main(int argc, char *argv[]){
 
-  if(argc<5){
-    printf("N BINS LGC_METHOD A B \n");
-    printf("1-->MINIMAL STD\t 2-->RANDU\t 3-->MY LCG\n");
+  if(argc!=6){
+    printf("N BINS LCG_METHOD A B \n");
+    printf("1-->MINIMAL_STD 2-->RANDU 3-->L'ECUYER2 4-->MY_LCG\n");
     printf("A B are parameters of the distribution (interval of definition || MU and SIGMA of the normal distribution)\n"); 
     exit(-1);
   }
@@ -20,14 +20,23 @@ int main(int argc, char *argv[]){
   double a = atof(argv[4]);
   double b = atof(argv[5]);
 
+  if(N<=0 || bins<1 || choice<1 || choice>4){
+    printf("Wrong imput:\n");
+    printf("N>0 BINS>0 1<=LCG<=4\n");
+    exit(-1);
+  }
+
   seed = (RANDOM) time(NULL);
-  
+
   double *array = (double *) malloc(N*sizeof (double));
+
   if(choice == 1)
     set_minimal_std();
   else if(choice == 2)
     set_randu();
-  else if(choice == 3){
+  else if(choice == 3)
+    set_Ecuyer2();
+  else if(choice == 4){
     RANDOM A, B, M;
     printf("#Insert your LCG values (I'=(B+A*I)percentM):\n");
     printf("#a: ");
@@ -62,11 +71,7 @@ int main(int argc, char *argv[]){
   stat statistic = get_statistic(array, N, bins);
   print_statistic(statistic);
   
-  free(statistic.hist);
   free(array);
-
-
-  //potrei aggiungere il calcolo del tempo di esecuzione
   
   return 0;
  }

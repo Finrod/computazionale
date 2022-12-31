@@ -1,3 +1,12 @@
+/* -> PLOT: stampa su file la traiettoria del camminatore e, se possibile, ne stampa il grafico;
+   -> MSD: stampa in std output ad ogni tempo la media delle posizoni per ogni coordinata spaziale e lo spostamento quadratico medio;
+   -> HISTO: se possibile stampa al tempo finale
+                                                1. l'istogramma e la distribuzione cumulativa per due coodinate spaziali
+						2. istogramma e la distribuzione cumulativa della distanza dall'origine
+						3. in std output i valori per costruire l'istogramma di P(x,y) 
+ */
+
+
 #include "random.h"
 #include "statistic.h"
 #include <time.h>
@@ -7,7 +16,7 @@
 
 
 
-#define UNMEZZO 0.5                      //per non fare tutte le volte la divisione per 2    POSSO FARE ANCHE 1/STEPS 
+#define UNMEZZO 0.5
 
 
 /****************************************/
@@ -16,11 +25,9 @@
 int main(int argc, char *argv[]){
 
   if(argc < 3){
-    printf("Wrong imput! --> DIMESION STEPS STORIES\n");
+    printf("Wrong imput! --> DIMESIONS STEPS STORIES\n");
     exit(-1);
   }
-
-  
 
   seed = time(NULL);
   set_Ecuyer2();
@@ -28,14 +35,30 @@ int main(int argc, char *argv[]){
   int DIM = atoi(argv[1]);
   int STEPS = atoi(argv[2]);
   int STORIE = atoi(argv[3]);
-  int *X = (int *) calloc (STORIE*DIM, sizeof(int));            //ARRAY CHE CONTIENE LE COORDINATE DI TUTTE LE PARTICELLE AD UN CERTO TEMPO t
+  if(DIM<1 || STORIE<1 || STEPS<1){
+    printf("Wrong impunt! Imput values must be >= 1\n");
+    exit(-1);
+  }
+  
+  int *X = (int *) calloc (STORIE*DIM, sizeof(int));               //ARRAY CHE CONTIENE LE COORDINATE DI TUTTE LE PARTICELLE AD UN CERTO TEMPO t
+                                                                   /*L'array al tempo iniziale e' costruito in questo modo:
+								          | X1 | X2 | X3 | ...... | x_DIM |
+									  ------------------------------
+								     | S1 |  0 |  0 |  0 | ...... |   0   |
+								     | S2 |  0 |  0 |  0 | ...... |   0   |
+								     | S3 |  0 |  0 |  0 |
+								       .     .
+								       .     .
+								       .     .
+								       .
+								       .
+								     | S_STORIE |
 
-
+								    */
   if(X==NULL){
     printf("Something went wrong during the allocation!  :(\n");
     exit(-1);
   }
-
   
 
 #ifdef MSD
@@ -49,58 +72,73 @@ int main(int argc, char *argv[]){
 #endif
   
   
-  
-  
-#ifdef HISTO
-  //int *HIST = (int *)  calloc ((2*STEPS + 1) * (2 * STEPS + 1) , sizeof(int));                                 //MATRICE ISTOGRAMMA altro modo di fare istogramma
-
-  
- double *x1 = (double*) calloc(STORIE, sizeof(double));            //ARRAY PER L'ISTOGRAMMA DI UNA VARIABILE E PER LE DISTANZE
- double *x2 = (double*) calloc(STORIE, sizeof(double));            //ARRAY PER L'ISTOGRAMMA DI UNA VARIABILE E PER LE DISTANZE
+#ifdef HISTO 
+ double *x1 = (double*) calloc(STORIE, sizeof(double));            //ARRAY PER ISTOGRAMMI DI UNA VARIABILE E PER LA DISTANZA
+ double *x2 = (double*) calloc(STORIE, sizeof(double));           
  double *DISTANCE = (double*) calloc(STORIE, sizeof(double));
  
- 
- 
- if(/*HIST == NULL ||*/ x1 == NULL || x2 == NULL || DISTANCE == NULL){
+ if(x1 == NULL || x2 == NULL || DISTANCE == NULL){
    printf("Something went wrong during the allocation!  :(\n");
    exit(-1);
  }
 #endif
  
+
+#ifdef PLOT
+ int COMANDI = 6;
+ char *comandi[]={"set term wxt", "set title 'Grafico del camminatore'", "", "", "", ""};
+ 
+ FILE *gnuplotPipe;
+ gnuplotPipe = popen ("gnuplot -persistent","w");
+ if(gnuplotPipe == NULL){
+   printf("Something went wrong...\n");
+   exit(-1);
+ }
+ 
+ if(DIM < 4 && STORIE == 1){
+   if(DIM == 1){
+     comandi[2] = "set xlabel 't'";
+     comandi[3] = "set ylabel 'x'";
+     comandi[4] = "plot 'plot.dat' u 2:5 title 'x(t)' pt '.'";
+   }
+   if(DIM == 2){
+     comandi[2] = "set xlabel 'x'";
+     comandi[3] = "set ylabel 'y'";
+     comandi[4] = "plot 'plot.dat' u 5:6 title 'y(x)' pt '.'";
+   }
+   if(DIM == 3){
+     comandi[2] = "set xlabel 'x'";
+     comandi[3] = "set ylabel 'y'";
+     comandi[4] = "set zlabel 'z'";
+     comandi[5] = "splot 'plot.dat' u 5:6:7 title 'z(x,y)' pt '.'";
+   }
+ }
   
-
-
-
-
-
-
-
-#ifdef PLOT  
-
-  for(int j=0; j<STORIE; j++){
-    printf("T %d S %d  ", 0, j+1);                      //STAMPA INIZIALE t=0 
-    for(int k=0; k<DIM; k++){
-      printf("%d ", 0);
-    }
-    printf("\n");
-  }
-
-  printf("\n\n");
+ FILE *pf;
+ pf = fopen ("plot.dat", "w");
+ if(pf == NULL){
+   printf("Something went wrong...\n");
+   exit(-1);
+ }
+ 
+ for(int j=0; j<STORIE; j++){
+   fprintf(pf, "T %d S %d  ", 0, j+1);                         //STAMPA INIZIALE t=0 
+   for(int k=0; k<DIM; k++){
+     fprintf(pf, "%d ", 0);
+   }
+   fprintf(pf, "\n");
+ }
+ fprintf(pf, "\n\n");
 #endif
 
 
-
-
-  
-  
 #ifdef MSD
-  
-  printf("#A %16s", "t");                                 //STAMPO LA LEGENDA
+ printf("%16s ", "t");
   for(int k=0; k<DIM; k++)
-    printf("%16s%d%s", "<x_", k+1, ">");
+    printf("%16s%d%s ", "<x_", k+1, ">");
   printf("%16s\n", "MSD");
   
-  printf("A %16d", 0);                                    //FACCIO LA PRIMA STAMPA t=0
+  printf("%16d", 0);                                           //PRIMA STAMPA t=0
   for(int k=0; k<DIM; k++)
     printf("%16d", 0);
   printf("%16d\n", 0);
@@ -115,57 +153,43 @@ int main(int argc, char *argv[]){
   for(int t=0; t<STEPS; t++){                            
 
 #ifdef MSD    
-    double msd = 0;                                      //MID SQUARE DISPLACEMENT LO INIZIALIZZO A 0
+    double msd = 0;
 #endif 
 
 /****************************SCORRO LE STORIE ********************************/
     
     for(int j=0; j<STORIE; j++){                         
 
+      int direzione = get_intero (2 * DIM - 1);
+      int spostamento = (direzione % 2) ? 1 : -1 ;                  //capisco se va a destra o sinistra
+      direzione = direzione * UNMEZZO;                              //determino la componente da incrementare
 
-      
-      
-      int dir = get_intero (2 * DIM - 1);
-      int spostamento = (dir % 2) ? 1 : -1 ;            //capisco se va a destra o sinistra
-      dir = (int) dir * UNMEZZO;                        //determino la componente da incrementare
-
-      X[dir + j * DIM] += spostamento;                        //faccio lo spostamento
+      X[direzione + j * DIM] += spostamento;                        //faccio lo spostamento
 
 
-      
 #ifdef MSD   
-      MEAN[dir] += X[dir + j * DIM];                          //faccio le somme e le somme quadre
-      MEAN2[dir] += X[dir + j * DIM] * X[dir + j * DIM];
+      MEAN[direzione] += X[direzione + j * DIM];                          
+      MEAN2[direzione] += X[direzione + j * DIM] * X[direzione + j * DIM];
 #endif
-
-
-      
-
-      
 
       
 #ifdef PLOT
-      printf("T %d S %d  ", t+1, j+1);                      //STAMPA DELLE POSIIZONI AL TEMPO T E ALLA STORIA S
-      for(int k=0; k<DIM; k++){
-	printf("%d ", X[k + j * DIM]);
-      }
-      printf("\n");
-#endif
-
-      
+      fprintf(pf, "T %d S %d  ", t+1, j+1);                        //STAMPA DELLE POSIIZONI AL TEMPO T E ALLA STORIA S
+      for(int k=0; k<DIM; k++)
+	fprintf(pf, "%d ", X[k + j * DIM]);
+      fprintf(pf, "\n");
+#endif    
       
     }
 
     
 #ifdef PLOT
-    printf("\n\n");
+    fprintf(pf, "\n\n");
 #endif
         
 
-    
-
 #ifdef MSD         
-    printf("A %16d", t + 1);                            //STAMPA DELLA STATISTICA
+    printf("%16d", t + 1);                                         //STAMPA DELLA STATISTICA
     for(int k=0; k<DIM; k++){ 
       MEAN[k] /= STORIE;
       MEAN2[k] /= STORIE;
@@ -178,13 +202,18 @@ int main(int argc, char *argv[]){
     msd = 0;
 #endif
 
-
   }
 
-
-
+#ifdef PLOT
+  if(DIM < 4 && STORIE == 1){
+    for(int i=0; i<COMANDI; i++)
+      fprintf(gnuplotPipe, "%s\n", comandi[i]);
+    pclose(gnuplotPipe);
+  }
   
-  
+    fclose(pf);
+#endif
+
   
 #ifdef HISTO 
   //int L = 2 * STEPS + 1;
@@ -194,28 +223,32 @@ int main(int argc, char *argv[]){
   double Ystep;
   double M;
   int *HIST;
+  stat statX;
+  stat statY;
 
 
   for(int j=0; j<STORIE; j++){
     x1[j] = X[j * DIM];
-    x2[j] = X[j * DIM + 1];
+    if(DIM >= 2)
+      x2[j] = X[j * DIM + 1];
   }
-  
-  stat statY = get_statistic(x2, STORIE);
-  print_statistic( statY );                                      //FACCIO L'ISTOGRAMMA PER UN'UNICA VARIABILE
-  
-  stat statX = get_statistic(x1, STORIE);
-  print_statistic( statX );                                      //FACCIO L'ISTOGRAMMA PER UN'UNICA VARIABILE
+
+  if(DIM >= 2){
+    statY = get_statistic(x2, STORIE);
+    print_statistic( statY );                                       //ISTOGRAMMA PER UN'UNICA VARIABILE
+  }  
+  statX = get_statistic(x1, STORIE);
+  print_statistic( statX );                                         //L'ISTOGRAMMA PER UN'UNICA VARIABILE
 
 
   
   if(DIM == 2){
-    Xbins = statX.bins;                                               //SCELTA DI QUANTI BINS
+    Xbins = statX.bins;                                             //SCELTA DI QUANTI BINS NELLA FUNZIONE "get_statistic"
     Ybins = statY.bins;
     
     Xstep = (statX.max - statX.min) / (double) Xbins;
     Ystep = (statY.max - statY.min) / (double) Ybins;
-    M = 1. / ((double) STORIE * Xstep * Ystep);              //COSTANTE DI NORMALIZZAZIONE
+    M = 1. / ((double) STORIE * Xstep * Ystep);                      //COSTANTE DI NORMALIZZAZIONE
 
   
     HIST = (int *)  calloc ( (Xbins * Ybins) , sizeof(int));         //MATRICE ISTOGRAMMA
@@ -225,61 +258,32 @@ int main(int argc, char *argv[]){
     }
   }
 
-
-  
-
-for(int j=0; j<STORIE; j++){
-
-
-  if(DIM == 2){                                           //SE LA DIMENSIONE È 2 FACCIO L'ISTOGRAMMA 3D
-    int binx = (x1[j] - statX.min) / Xstep;
-    int biny = (x2[j] - statY.min) / Ystep;
+  for(int j=0; j<STORIE; j++){
+    if(DIM == 2){
+      int binx = (x1[j] - statX.min) / Xstep + 0.5;
+      int biny = (x2[j] - statY.min) / Ystep + 0.5;
     
-
-    int pos = binx + Xbins * biny;
-    HIST[pos] ++;
-  }
-    
-  double sum = 0;
-  for(int i=0; i<DIM; i++)
-    sum += X[j * DIM + i] * X[j * DIM + i];
-  DISTANCE[j] = pow(sum, 0.5);               //riempio l'array
-    
- }
-
-
-
-  /* for(int j=0; j<STORIE; j++){                  //ALTRO METODO DI FARE L'ISTOGRAMMA MENO OTTIMALE
-
-    int x = X[j * DIM];
-    int y = X[j * DIM + 1];
-    
-    
-    if (DIM==2){                                    //SE LA DIMENSIONE È 2 FACCIO L'ISTOGRAMMA 3D
-
-      x = x + STEPS;
-      y = STEPS - y;
       
-      int pos = x + L * y;
-      HIST [pos] ++;
+      int pos = binx + Xbins * biny;
+      HIST[pos] ++;
     }
     
-    
-
     double sum = 0;
     for(int i=0; i<DIM; i++)
       sum += X[j * DIM + i] * X[j * DIM + i];
-    DISTANCE[j] = pow(sum, 0.5);               //riempio l'array
-    }*/
-  
+    DISTANCE[j] = pow(sum, 0.5);
+    
+  }
+
+  print_statistic( get_statistic( DISTANCE, STORIE));
   
   if(DIM == 2){
-
+    printf("#%16s %16s %16s", "x", "y", "P(x,y)");
     for(int i=0; i<Ybins; i++){
       for(int j=0; j<Xbins; j++){
-
-	double x = (statX.min + Xstep/2)+ j*Xstep;
-	double y = (statY.min + Ystep/2)+ i*Ystep;
+	
+	double x = (statX.min /*+ Xstep/2*/)+ j*Xstep;
+	double y = (statY.min /*+ Ystep/2*/)+ i*Ystep;
 	double P = (double)  HIST[j + i * Xbins] * M;
 
 	if(P != 0)
@@ -288,45 +292,20 @@ for(int j=0; j<STORIE; j++){
     }
   }
 
-  printf("\n\n");
-  
-  
-    
-  
-    
-  print_statistic( get_statistic( DISTANCE, STORIE));
-
-  
-
   
   if(DIM == 2)
     free(HIST);
+  free(DISTANCE);
   free(x1);
   free(x2);
 #endif
 
-
-
-  
 #ifdef MSD
   free(MEAN);
   free(MEAN2);
 #endif
 
-
   free(X);
     
   return 0;
 }
-
-
-
-
-
-/*******************************************************************/
-
-/*I problemi da risolvere sono:
-  -la distribuzione non è centrata in zero 
-
-Prossimo passo implementare i camminatori speciali.  
-*/

@@ -1,4 +1,4 @@
-#include<stdio.h>
+ #include<stdio.h>
 
 typedef struct {
   double min;
@@ -35,7 +35,7 @@ stat get_statistic(double *dat, int N){
   double stdev = pow(mean2 - (mean*mean), 0.5);
   
   double step = stdev * 0.5;
-  int bins = (int) (max - min) / step;
+  int bins = (max - min) / step;
 
   int *hist = (int*) malloc(bins*sizeof(int));
   if(hist == NULL)

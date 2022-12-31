@@ -1,0 +1,247 @@
+
+
+*******************************************************************************
+Sat Dec 31 10:42:54 2022
+
+
+FIT:    data read from 'T4000_S5000_L40.dat' u 2:3
+        format = x:z
+        #datapoints = 9
+        residuals are weighted equally (unit weight)
+
+function used for fitting: D(x)
+	D(x)=a*(1-x)**b+c*(1-x)**d
+fitted parameters initialized with current variable values
+
+iter      chisq       delta/lim  lambda   a             b             c             d            
+   0 9.0642018606e+00   0.00e+00  4.46e-01    1.000000e+00   1.000000e+00   1.000000e+00   1.000000e+00
+
+Current data point
+=========================
+#               = 9 out of 9
+x               = 2.19731        
+z               = 0.0153202      
+
+Current set of parameters
+=========================
+a               = 2.19731        
+b               = -386.901       
+c               = -1.95399       
+d               = 389.574        
+
+BREAK: Undefined value during function evaluation
+
+*******************************************************************************
+Sat Dec 31 10:43:35 2022
+
+
+FIT:    data read from 'T4000_S5000_L40.dat' u 2:3
+        format = x:z
+        #datapoints = 9
+        residuals are weighted equally (unit weight)
+
+function used for fitting: D(x)
+	D(x)=a*(1-x)**b+c*(1-x)**d
+fitted parameters initialized with current variable values
+
+iter      chisq       delta/lim  lambda   a             b             c             d            
+   0 9.0642018606e+00   0.00e+00  4.46e-01    1.000000e+00   1.000000e+00   1.000000e+00   1.000000e+00
+
+Current data point
+=========================
+#               = 9 out of 9
+x               = 2.19731        
+z               = 0.0153202      
+
+Current set of parameters
+=========================
+a               = 2.19731        
+b               = -386.901       
+c               = -1.95399       
+d               = 389.574        
+
+BREAK: Undefined value during function evaluation
+
+*******************************************************************************
+Sat Dec 31 10:43:57 2022
+
+
+FIT:    data read from 'T4000_S5000_L40.dat' u 2:3
+        format = x:z
+        #datapoints = 9
+        residuals are weighted equally (unit weight)
+
+function used for fitting: D(x)
+	D(x)=a*(1-x)**b+c*(1-x)**d
+fitted parameters initialized with current variable values
+
+iter      chisq       delta/lim  lambda   a             b             c             d            
+   0 9.0642018606e+00   0.00e+00  4.46e-01    1.000000e+00   1.000000e+00   1.000000e+00   1.000000e+00
+
+Current data point
+=========================
+#               = 9 out of 9
+x               = 2.19731        
+z               = 0.0153202      
+
+Current set of parameters
+=========================
+a               = 2.19731        
+b               = -386.901       
+c               = -1.95399       
+d               = 389.574        
+
+BREAK: Undefined value during function evaluation
+
+*******************************************************************************
+Sat Dec 31 10:45:41 2022
+
+
+FIT:    data read from 'T4000_S5000_L40.dat' u 2:3
+        format = x:z
+        x range restricted to [0.100000 : 0.900000]
+        #datapoints = 9
+        residuals are weighted equally (unit weight)
+
+function used for fitting: D(x)
+	D(x)=a*(1-x)**b+c*(1-x)**d
+fitted parameters initialized with current variable values
+
+iter      chisq       delta/lim  lambda   a             b             c             d            
+   0 9.0642018606e+00   0.00e+00  4.46e-01    1.000000e+00   1.000000e+00   1.000000e+00   1.000000e+00
+
+Current data point
+=========================
+#               = 9 out of 9
+x               = 2.19731        
+z               = 0.0153202      
+
+Current set of parameters
+=========================
+a               = 2.19731        
+b               = -386.901       
+c               = -1.95399       
+d               = 389.574        
+
+BREAK: Undefined value during function evaluation
+
+*******************************************************************************
+Sat Dec 31 10:47:24 2022
+
+
+FIT:    data read from 'diffusione_S1000_T1000.dat' u 2:3
+        format = x:z
+        x range restricted to [0.100000 : 0.900000]
+        #datapoints = 9
+        residuals are weighted equally (unit weight)
+
+function used for fitting: D(x)
+	D(x)=a*(1-x)**b+c*(1-x)**d
+fitted parameters initialized with current variable values
+
+iter      chisq       delta/lim  lambda   a             b             c             d            
+   0 9.0476515267e+00   0.00e+00  4.46e-01    1.000000e+00   1.000000e+00   1.000000e+00   1.000000e+00
+  14 1.5098473079e-07  -1.80e-01  4.46e-08    1.123378e-01   2.005624e+00   1.378167e-01   9.838458e-01
+
+After 14 iterations the fit converged.
+final sum of squares of residuals : 1.50985e-07
+rel. change during last iteration : -1.80336e-06
+
+degrees of freedom    (FIT_NDF)                        : 5
+rms of residuals      (FIT_STDFIT) = sqrt(WSSR/ndf)    : 0.000173773
+variance of residuals (reduced chisquare) = WSSR/ndf   : 3.01969e-08
+
+Final set of parameters            Asymptotic Standard Error
+=======================            ==========================
+a               = 0.112338         +/- 0.01573      (14%)
+b               = 2.00562          +/- 0.1136       (5.665%)
+c               = 0.137817         +/- 0.01597      (11.59%)
+d               = 0.983846         +/- 0.04071      (4.138%)
+
+correlation matrix of the fit parameters:
+                a      b      c      d      
+a               1.000 
+b              -0.990  1.000 
+c              -1.000  0.992  1.000 
+d              -0.996  0.975  0.995  1.000 
+
+
+*******************************************************************************
+Sat Dec 31 10:47:44 2022
+
+
+FIT:    data read from 'T4000_S5000_L40.dat' u 2:3
+        format = x:z
+        x range restricted to [0.100000 : 0.900000]
+        #datapoints = 9
+        residuals are weighted equally (unit weight)
+
+function used for fitting: D(x)
+	D(x)=a*(1-x)**b+c*(1-x)**d
+fitted parameters initialized with current variable values
+
+iter      chisq       delta/lim  lambda   a             b             c             d            
+   0 9.7040639115e-06   0.00e+00  5.17e-02    1.123378e-01   2.005624e+00   1.378167e-01   9.838458e-01
+  40 2.3451165026e-07  -1.17e-01  5.17e-08    1.490692e-01   1.739457e+00   9.727916e-02   8.841853e-01
+
+After 40 iterations the fit converged.
+final sum of squares of residuals : 2.34512e-07
+rel. change during last iteration : -1.16909e-06
+
+degrees of freedom    (FIT_NDF)                        : 5
+rms of residuals      (FIT_STDFIT) = sqrt(WSSR/ndf)    : 0.000216569
+variance of residuals (reduced chisquare) = WSSR/ndf   : 4.69023e-08
+
+Final set of parameters            Asymptotic Standard Error
+=======================            ==========================
+a               = 0.149069         +/- 0.02642      (17.73%)
+b               = 1.73946          +/- 0.1137       (6.536%)
+c               = 0.0972792        +/- 0.0267       (27.45%)
+d               = 0.884185         +/- 0.08383      (9.482%)
+
+correlation matrix of the fit parameters:
+                a      b      c      d      
+a               1.000 
+b              -0.993  1.000 
+c              -1.000  0.994  1.000 
+d              -0.997  0.982  0.996  1.000 
+
+
+*******************************************************************************
+Sat Dec 31 10:48:18 2022
+
+
+FIT:    data read from 'T4000_S5000_L40.dat' u 2:3:4 yerrors
+        format = x:z:s
+        x range restricted to [0.100000 : 0.900000]
+        #datapoints = 9
+function used for fitting: D(x)
+	D(x)=a*(1-x)**b+c*(1-x)**d
+fitted parameters initialized with current variable values
+
+iter      chisq       delta/lim  lambda   a             b             c             d            
+   0 3.9248935137e+02   0.00e+00  1.36e+03    1.490692e-01   1.739457e+00   9.727916e-02   8.841853e-01
+  46 1.8152151973e+01  -1.99e-02  1.36e-03    1.122106e-01   1.966256e+00   1.353542e-01   9.819781e-01
+
+After 46 iterations the fit converged.
+final sum of squares of residuals : 18.1522
+rel. change during last iteration : -1.99465e-07
+
+degrees of freedom    (FIT_NDF)                        : 5
+rms of residuals      (FIT_STDFIT) = sqrt(WSSR/ndf)    : 1.90537
+variance of residuals (reduced chisquare) = WSSR/ndf   : 3.63043
+p-value of the Chisq distribution (FIT_P)              : 0.00276164
+
+Final set of parameters            Asymptotic Standard Error
+=======================            ==========================
+a               = 0.112211         +/- 0.004652     (4.146%)
+b               = 1.96626          +/- 0.04374      (2.224%)
+c               = 0.135354         +/- 0.005007     (3.699%)
+d               = 0.981978         +/- 0.01093      (1.113%)
+
+correlation matrix of the fit parameters:
+                a      b      c      d      
+a               1.000 
+b              -0.981  1.000 
+c              -0.997  0.991  1.000 
+d              -0.998  0.983  0.998  1.000 
