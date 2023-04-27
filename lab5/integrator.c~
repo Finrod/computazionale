@@ -6,7 +6,7 @@
 
 int main (int argc, char **argv ){
 
-  parameters param = {2 * M_PI, 0.5, 1.5, 2./3.};
+  parameters param = {2 * M_PI, 0.3, 0., 2./3.};
   double tempo = 0;
 
   FILE *gnuplotPipe;
