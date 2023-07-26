@@ -3,21 +3,31 @@
 #include<time.h>
 #include "random.h"
 
+
 #define PSTEP 0.001    //step di incremento della probabilità di "UP" per la ricerca di P_cluster
 #define UP +1
 #define DOWN -1
 #define RAND get_real()
 #define DESTRA 0
 #define SOTTO 1
+#define SINISTRA 2
+#define SOPRA 3
 
-struct sito{
-  int spin;
-  struct sito *destra;
-  struct sito *sotto;
+struct sito{             //definisco la struttura sito:
+  int spin;              //     spin =+/- 1       
+  struct sito *former;   //next e former sono i puntatori al sito precedente e successivo dello stesso cluster
+  struct sito *next;     //padre e figlio sono i puntatori ai primo e all'ultimo sito del cluster
+  struct sito *padre;
+  struct sito *figlio;
+  int indice;//DA TOGLIERE
 } *rete;
 
-void initializing(int S, double prob){
 
+
+/*********************************INIZIALIZZAZIONE**************************/
+void initializing(int L, double prob){
+
+  int S = L*L;
   rete = (struct sito *)calloc(S, sizeof(struct sito));
   
   for(int i=0; i<S; i++){
@@ -25,44 +35,107 @@ void initializing(int S, double prob){
       rete[i].spin = UP;
     else
       rete[i].spin = DOWN;
+
+    rete[i].former = rete + i;      //inizializzo tutti i puntatori a se stessi
+    rete[i].next = rete + i;
+    rete[i].padre = rete + i;
+    rete[i].figlio = rete + i;
+
+    rete[i].indice = i + 1;//DA TOGLIERE
   }
+
+  
+#ifdef DEBUG                       //stampa del reticolo
+  for(int i=0; i<L; i++){
+    for(int j=0; j<L; j++){
+      if(rete[j + L*i].spin == UP)
+	printf("1 ");
+      else
+	printf("0 ");
+    }
+    printf("\n");
+  }
+  printf("\n");
+#endif    
 }
+
+
+
+/************************************UPDATE***********************************/
 
 int siteUpdate(int posto, int **vicini, int direzione){
 
-  int postoVicino = vicini[posto][direzione]
+  int postoVicino = vicini[posto][direzione];
+  int cambiamento = 0;                                     //mi dice se c'è stato update
+  struct sito *testaSup, *codaSup;
+  struct sito *testaInf, *codaInf;
+  struct sito *aux;
+  int sitoSup, sitoInf;
   
-  if(rete[posto].spin == rete[postoVicino].spin){
+  if( (rete[posto].spin == rete[postoVicino].spin) &&      //controllo se c'è bisogno di fare l'update
+       (rete[posto].padre != rete[postoVicino].padre) ){
+    
+    cambiamento = 1;
+    
+    if(rete[posto].padre < rete[postoVicino].padre){       //trovo chi è il "cluster" padre e chi è il "cluster" figlio
+      sitoSup = postoVicino;
+      sitoInf = posto;
+    }
+    else{
+      sitoInf = postoVicino;
+      sitoSup = posto;
+    }
 
-    ...
+
+    testaSup = rete[sitoSup].padre;
+    testaInf = rete[sitoInf].padre;
+    codaSup = rete[sitoSup].figlio;
+    codaInf = rete[sitoInf].figlio;
+
+    
+    
+
+    aux = testaSup;                                     //assegno il nuovo figlio a tutti i siti del cluster padre
+    aux->padre = testaInf;
+    while(aux != aux->next) {
+      aux = aux->next;
+      aux->padre = testaInf;
+    }
+
+
+    codaInf->next = testaSup;
+    testaSup->former = codaInf;                         //collego tra loro i due padri e i due figli
+    
 
   }
     
-  return;
+  return cambiamento;
 }
 
+
+
+/****************************************MAIN******************************************/
 
 int main(int argc, char *argv[]){
 
   int L;
   int Storie;
-  double ProbGuasto;
+  double ProbUp = 0.5;  //BISOGNA METTERE PSTEP
   
   L = atoi(argv[1]);
   Storie = atoi(argv[2]);
 
   set_Ecuyer2();
-  seed = time(NULL)
+  seed = time(NULL);
 
-  int fatto = 0;
   int S = L*L;
-  ProbUp = PSTEP;
+  int fatto = 0;
 
   int **vicini = (int **)malloc(S * sizeof(int *));
   for(int j=0; j<S; j++)
-    vicini[j] = (int *)malloc(2 * sizeof(int));
-  //riempire l'array vicini
-  for(int j=0; j<S; j++){
+    vicini[j] = (int *)malloc(4 * sizeof(int));
+                                                         //riempire l'array vicini:
+  for(int j=0; j<S; j++){                                //mi dice per ogni sito qual è il suo sito a destra e il suo sito sotto
     if((j%L) != L-1)
       vicini[j][DESTRA] = j+1;
     else
@@ -72,35 +145,51 @@ int main(int argc, char *argv[]){
       vicini[j][SOTTO] = j + L;
     else
       vicini[j][SOTTO] = j - (L-1) * L;
+
+    if(j%L != 0)
+      vicini[j][SINISTRA] = j - 1;
+    else
+      vicini[j][SINISTRA] = j + (L-1);
+
+    if(j/L != 0)
+      vicini[j][SOPRA] = j - L;
+    else
+      vicini[j][SOPRA] = j + (L-1) * L;
   }
 
 
-  while(fatto != 1){
+
     
-    for(int i=0; i<Storie; i++){
-           
-      initializing(S, ProbUp);
-
-
-
-
-      int Ncambiamenti;
+  for(int i=0; i<Storie; i++){    //STORIE
+    
+    initializing(L, ProbUp);   //inizializzazione
+      int Ncambiamenti=1;
       
-      while(Ncambiamenti != 0){
-
-	Ncambiamenti = 0;
+      while(Ncambiamenti != 0){    //ricerca dei cluster
 	
+	Ncambiamenti = 0;
 	for(int j=0; j<S; j++){
-	  Ncambiamenti += siteUpdate(j, vicini, DESTRA);
-	  Ncambiamenti += siteUpdate(j, vicini, SOTTO);
+	  Ncambiamenti = siteUpdate(j, vicini, DESTRA);
+	  Ncambiamenti = siteUpdate(j, vicini, SOTTO);
+	  Ncambiamenti = siteUpdate(j, vicini, SINISTRA);
+	  Ncambiamenti = siteUpdate(j, vicini, SOPRA);
 	}
       }
-      free(rete);
-    }
-    ProbGuasto += PSTEP;
-  }
-  
-  
 
+#ifdef DEBUG
+      for(int i=0; i<S; i++)
+	printf("INDEX=%d, SPIN=%d, FORMER=%d, NEXT=%d, PADRE=%d, FIGLIO=%d\n", rete[i].indice, rete[i].spin, rete[i].former->indice,
+	       rete[i].next->indice, rete[i].padre->indice, rete[i].figlio->indice);
+      printf("\n");
+      
+#endif 
+      free(rete);
+  }
+
+
+  for(int i=0; i<L; i++)
+    free(vicini[i]);
+  free(vicini);
+  
   return 0;
 }
